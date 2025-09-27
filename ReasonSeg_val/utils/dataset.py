@@ -10,17 +10,13 @@ import torch.nn.functional as F
 from pycocotools import mask
 from transformers import CLIPImageProcessor
 
-# from LISA.model.llava import conversation as conversation_lib
-from Reasonseg_val import conversation as conversation_lib
+from ReasonSeg_val import conversation as conversation_lib
 
-# from LISA.model.llava.constants import (DEFAULT_IMAGE_TOKEN, IGNORE_INDEX,
-#                                    IMAGE_TOKEN_INDEX)
-from Reasonseg_val.constants import (DEFAULT_IMAGE_TOKEN, IGNORE_INDEX,
-                                   IMAGE_TOKEN_INDEX)
-from Reasonseg_val.mm_utils import tokenizer_image_token
-from segment_anything.utils.transforms import ResizeLongestSide
+from ReasonSeg_val.constants import (DEFAULT_IMAGE_TOKEN, IGNORE_INDEX,
+                                     IMAGE_TOKEN_INDEX)
+from ReasonSeg_val.mm_utils import tokenizer_image_token
+from ReasonSeg_val.segment_anything.utils.transforms import ResizeLongestSide
 
-from .conversation import get_default_conv_template
 from .data_processing import get_mask_from_json
 from .reason_seg_dataset import ReasonSegDataset
 from .refer import REFER

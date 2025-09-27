@@ -13,7 +13,7 @@ from transformers import CLIPImageProcessor
 
 # from model.llava import conversation as conversation_lib
 # from model.segment_anything.utils.transforms import ResizeLongestSide
-from Reasonseg_val import conversation as conversation_lib
+from ReasonSeg_val import conversation as conversation_lib
 from segment_anything.utils.transforms import ResizeLongestSide
 
 from .utils import ANSWER_LIST, SHORT_QUESTION_LIST

@@ -1,11 +1,9 @@
-from Reasonseg_val.utils.dataset import HybridDataset, ValDataset, collate_fn
-from Reasonseg_val.utils.utils import (DEFAULT_IM_END_TOKEN, DEFAULT_IM_START_TOKEN,
-                         AverageMeter, ProgressMeter, Summary, dict_to_cuda,
-                         intersectionAndUnionGPU)
+from ReasonSeg_val.utils.dataset import HybridDataset, ValDataset, collate_fn
+from ReasonSeg_val.utils.utils import (DEFAULT_IM_END_TOKEN, DEFAULT_IM_START_TOKEN,
+                                       AverageMeter, ProgressMeter, Summary, dict_to_cuda,
+                                       intersectionAndUnionGPU)
 
 import torch.nn.functional as F
-import argparse
-from hglmm.datasets.png import PNGDataset
 from tqdm import tqdm
 from accelerate import Accelerator
 from accelerate.utils import gather_object
