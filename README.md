@@ -130,26 +130,23 @@ accelerate launch ReasonSeg_val/reasonseg_code/reasonseg_val.py \
 
 ## Qualitative examples
 Here we present some qualitative examples of our method on both RES and PNG
-![](images/qualitative results.png)
+![](images/qualitative_results.png)
 
 ## Citation
 
 ```bibtex
 @misc{wu2024flmm,
-      title={F-LMM: Grounding Frozen Large Multimodal Models}, 
-      author={Size Wu and Sheng Jin and Wenwei Zhang and Lumin Xu and Wentao Liu and Wei Li and Chen Change Loy},
-      year={2024},
-      eprint={2406.05821},
+      title={HG-LMM: Unleashing High-Quality Pixel Grounding Capabilities in Frozen Large Multimodal Models}, 
+      author={Wenjie Li, Jiale Cao, Jin Xie, Aiping Yang, and Yanwei Pang},
+      year={2025},
+      eprint={xxx},
       archivePrefix={arXiv},
       primaryClass={cs.CV}
 }
 ```
 
-## License
-This project is licensed under [NTU S-Lab License 1.0](LICENSE).
 
 ## Acknowledgement
 
-This project is impossible without open-source efforts of large multimodal models in the community, including 
-[LLaVA](https://huggingface.co/llava-hf), [DeepSeek-VL](https://github.com/deepseek-ai/DeepSeek-VL). In addition, we also thank open-source code bases from [transformers](https://github.com/huggingface/transformers) and [openmmlab](https://github.com/open-mmlab) teams that facilitate the development of this project.
+Without the community's open-source efforts on large and medium-sized multimodal models and related work based on large models, this project would be impossible to complete, including [F-LMM](https://github.com/wusize/F-LMM),[LISA](https://github.com/dvlab-research/LISA),[GLAMM](https://github.com/mbzuai-oryx/groundingLMM),[LLaVA](https://huggingface.co/llava-hf), [DeepSeek-VL](https://github.com/deepseek-ai/DeepSeek-VL). 
 
