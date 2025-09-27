@@ -26,11 +26,11 @@ It is currently under construction.
 
 **[RefCOCO Series](https://github.com/lichengunc/refer).** Please refer to MMDetection's [tutorial](https://mmdetection.readthedocs.io/en/latest/user_guides/dataset_prepare.html#refcoco-dataset-preparation)  to prepare RefCOCO datasets.
 
-**[GRAND](https://github.com/mbzuai-oryx/groundingLMM).** Please refer to GLaMM's GitHub official [website](https://github.com/mbzuai-oryx/groundingLMM)  to prepare GRAND datasets.
+**[GRAND-f](https://github.com/mbzuai-oryx/groundingLMM).** Please refer to GLaMM's GitHub official [website](https://github.com/mbzuai-oryx/groundingLMM)  to prepare GRAND-f datasets.
 
 **[Reasonseg](https://github.com/dvlab-research/LISA).** Please refer to LISA's GitHub official [website](https://github.com/dvlab-research/LISA)  to prepare ReasonSeg datasets.
 ```text
-F-LMM/
+HG-LMM/
 ├── data
     ├── coco
         ├── annotations
