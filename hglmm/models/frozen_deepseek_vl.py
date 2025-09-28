@@ -6,37 +6,6 @@ from mmengine.model import BaseModel
 from xtuner.model.utils import LoadWoInit
 from mmengine.logging import print_log
 from hglmm.utils import compute_mask_IoU
-import time
-from mmengine.config import Config
-import numpy as np
-from sklearn.cluster import KMeans
-import torchvision.transforms as T
-from PIL import Image
-from sklearn.decomposition import PCA
-import numpy as np
-from torch.nn.functional import interpolate
-from featup.util import norm, unnorm, pca, remove_axes
-from featup.plotting import plot_feats, plot_lang_heatmaps
-from sklearn.decomposition import PCA
-import os
-import matplotlib.pyplot as plt
-from typing import List
-from segment_anything import SamPredictor, sam_model_registry
-import cv2
-import torchvision.models as models
-import random
-from transformers import AutoTokenizer, AutoModelForCausalLM
-
-from scipy.ndimage import center_of_mass
-import math
-# import wandb
-# wandb.init(project='F-LMM', name='llava_1.5_vicuna_7b')
-
-
-
-# ========================= Blob loss ================================
-
-
 
 class FrozenDeepseekVL(BaseModel):
 
@@ -121,7 +90,7 @@ class ResidualConvUnit(nn.Module):
         )
 
     def forward(self, x):
-        return x + self.conv(x)  # 残差连接
+        return x + self.conv(x)
 
 class DynamicConv(nn.Module):
     def __init__(self):
@@ -141,13 +110,13 @@ class DynamicConv(nn.Module):
         B, input_channels, H, W = image_embeds.shape
         n = llm_text_embeds.shape[0]
 
-        # 1. 动态生成卷积核参数
+        # 1. Dynamically generate convolution kernel parameters
         params = self.controller(llm_text_embeds).to(image_embeds.device)  # (n, in_channels*out_channels + out_channels)
         num_layers = 2
         output_channels = self.out_channels
         input_channels = self.in_channels
 
-        # 拆分权重和偏置
+        # Split weights and biases
         weights = [
             params[:, :input_channels * output_channels].reshape(n * output_channels, input_channels, 1, 1),
             params[:,
@@ -161,10 +130,10 @@ class DynamicConv(nn.Module):
             params[:, input_channels * output_channels + output_channels * output_channels + output_channels:].reshape(
                 n * output_channels)
         ]
-
+        # 2. Perform dynamic convolution on each text
         image_embeds_n = image_embeds.expand(n, -1, -1, -1, -1).permute(1, 0, 2, 3, 4).reshape(B, n * input_channels, H, W)
         output = image_embeds_n
-        # 分组卷积：每个文本独立处理
+        # Grouped convolution: each text is processed independently
         for i in range(num_layers):
             output = F.conv2d(
                 output,
@@ -187,7 +156,7 @@ class DynamicConv(nn.Module):
         return dynamic_image_embeds
 
 class LIFG(nn.Module):
-    def __init__(self, in_channels=3, base_channels=64, out_channels=128):
+    def __init__(self):
         super().__init__()
         self.dynamic_conv = DynamicConv()
         self.conv1 = nn.Conv2d(2048, 128, kernel_size=1)
@@ -234,14 +203,11 @@ class LCB(nn.Module):
         self.proj = nn.Conv2d(base_channels, out_channels, kernel_size=1)
 
     def forward(self, x):
-        # 第一阶段：1/4下采样
-        x = self.conv1(x)  # 1/2
+        x = self.conv1(x)
         x = self.conv2(x)
         x = self.conv3(x)
-        x = self.maxpool(x)  # 1/4 -> F1
-
-        # 第二阶段：多尺度特征提取
-        shallow_features = self.proj(x)  # 1/4
+        x = self.maxpool(x)
+        shallow_features = self.proj(x)
         return shallow_features
 
 class LDSI(nn.Module):
@@ -252,18 +218,16 @@ class LDSI(nn.Module):
         self.conv192to128 = nn.Conv2d(192, 128, kernel_size=3, padding=1)
 
         self.target_sizes = {
-            "stage1": 96,  # 1/4
-            "stage2": 48,  # 1/8
-            "stage3": 24,  # 1/16
-            "stage4": 12  # 1/32
+            "stage1": 96,
+            "stage2": 48,
+            "stage3": 24,
+            "stage4": 12
         }
         self.oupt_channels = 64
-        # 1. Reassemble模块: Resample到不同分辨率
         self.reassemble_projs = nn.ModuleDict({
             f"stage{i + 1}": nn.Sequential(
                 nn.Conv2d(128, self.oupt_channels, kernel_size=1),
                 nn.Upsample(size=size, mode='bilinear')
-                # nn.ConvTranspose2d(256, 256, kernel_size=3, stride=2, padding=1, output_padding=1)
                 if i < 3 else
                 nn.Conv2d(self.oupt_channels, self.oupt_channels, kernel_size=3, stride=2, padding=1)
             )
@@ -289,7 +253,6 @@ class LDSI(nn.Module):
         reassembled = []
         for i, stage in enumerate(self.target_sizes.keys()):
             proj_module = self.reassemble_projs[stage]
-            # 应用Resample
             x = mask_embeds[i]
             resampled = proj_module(x)
             if i == 0:
@@ -302,10 +265,7 @@ class Fuse_Maskhead(nn.Module):
     def __init__(self):
         super().__init__()
         self.oupt_channels = 64
-        # 2. 上采样路径
         self.upsample = nn.Upsample(scale_factor=2, mode='bilinear',align_corners=False)
-
-        # 3. RefineNet融合模块 (按照DPT图1右结构)
         self.resconvunit =ResidualConvUnit(self.oupt_channels)
 
         self.refine_blocks = nn.ModuleList([
@@ -313,11 +273,9 @@ class Fuse_Maskhead(nn.Module):
                 ResidualConvUnit(self.oupt_channels),
                 self.upsample,
                 nn.Conv2d(self.oupt_channels, self.oupt_channels, kernel_size=3, padding=1)
-                # nn.ConvTranspose2d(oupt_channels, oupt_channels, kernel_size=3, stride=2, padding=1, output_padding=1)
             ) for _ in range(4)
         ])
 
-        # 4. Mask预测头
         self.mask_head_fpn = nn.Sequential(
             nn.Conv2d(self.oupt_channels, self.oupt_channels, kernel_size=3, padding=1),
             nn.ReLU(inplace=True),
@@ -330,23 +288,17 @@ class Fuse_Maskhead(nn.Module):
         )
 
     def forward(self, multi_features):
-        #  自底向上融合 (从深层到浅层)
-        #最后一层单独处理
         hidden_states = []
         stages_num = 3
         x = self.refine_blocks[stages_num](multi_features[stages_num])
         hidden_states.append(x)
-        # 融合过程 (参考DPT图1右)，前三层
         for i in range(stages_num, 0, -1):
-            # 添加跳跃连接 (skip connection)
-            skip_feat = multi_features[i - 1]  # 获取同级特征
+            skip_feat = multi_features[i - 1]
             skip_feat = self.resconvunit(skip_feat)
-            x = x + skip_feat  # 特征融合
-            # RefineNet处理
+            x = x + skip_feat
             x = self.refine_blocks[stages_num - i](x)
             hidden_states.append(x)
-        # Step 3: 分割头上采样到原图分辨率
-        mask_pred = self.mask_head_fpn(x)  # (3,1,384,384)
+        mask_pred = self.mask_head_fpn(x)
         return mask_pred
 
 class HGFrozenDeepseekVL(FrozenDeepseekVL):
@@ -415,7 +367,7 @@ class HGFrozenDeepseekVL(FrozenDeepseekVL):
             del  matched
 
         llm_text_embeds = torch.stack(llm_text_embeds)
-        mask_attentions = torch.stack(mask_attentions).to(self.ldsi.dtype)
+        mask_attentions = torch.stack(mask_attentions)
         del attentions
 
 
@@ -445,8 +397,6 @@ class HGFrozenDeepseekVL(FrozenDeepseekVL):
                                    size=(padded_h, padded_w), mode='bilinear')[0]
         pred_masks \
             = pred_masks[:, before_height:before_height + mask_h, before_width:before_width + mask_w].contiguous()
-
-
 
         output = dict(pred_masks=pred_masks,mask_ids=mask_ids, hidden_states=hidden_states,
                       mask_attentions=mask_attentions)
@@ -634,7 +584,7 @@ class HGFrozenDeepseekVL(FrozenDeepseekVL):
         dynamic_fused_image_embeds = self.lifg(clip_multilayer, llm_text_embeds)
 
         ###LDSI
-        shallow_features = self.lcb(pixel_values[0])
+        shallow_features = self.lcb(pixel_values[0].float())
         multi_features = self.ldsi(dynamic_fused_image_embeds, mask_attentions, shallow_features)
 
         ###Maskhead
