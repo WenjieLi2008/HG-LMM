@@ -18,8 +18,7 @@ It is currently under construction.
 
 2. The version of [transformers](https://github.com/huggingface/transformers) used in this project is v4.39.1. And using versions beyond v4.40.0 cannot reproduce the performances . 
 
-3. Accelerate is used to build the evaluation pipeline of our models. Please refer to its official
-[webpage](https://github.com/huggingface/accelerate) for installation.
+3. Accelerate is used to build the evaluation pipeline of our models. Please refer to its official [webpage](https://github.com/huggingface/accelerate) for installation.
 
 ## Data Preparation
 **[PNG](https://github.com/BCV-Uniandes/PNG) Dataset.** Download images `train2017` and `val2017` from COCO's official [website](https://cocodataset.org/#home) and put them under `data/coco`. Download annotation files `png_coco_train2017.json` and `png_coco_val2017.json` from PNG's project [page](https://bcv-uniandes.github.io/panoptic-narrative-grounding/#downloads)  and put them under `data/coco/annotations`. Download mask annotation  `panoptic_train2017(.json)` and `panoptic_val2017(.json)` from COCO's official [website](http://images.cocodataset.org/annotations/panoptic_annotations_trainval2017.zip) and put them under `data/coco/annotations`.
@@ -92,9 +91,9 @@ The checkpoints of our trained models are available on [Google Drive](https://dr
 
 | #  |          LMM         |                                                            Configs                                                             |                                         Checkpoints                                         |
 |:--:|:---------------------:|:------------------------------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------:|
-| 1  |    DeepSeekVL-1.3B         |                    [hg_frozen_deepseek_vl_1_3b_chat_refcoco_png.py](configs/deepseek_vl/hg_frozen_deepseek_vl_1_3b_chat_refcoco_png.py)                      | [model](https://drive.google.com/file/d/1UXcjJrrpTm1bNphvPNjvol9gUfvzNbjA/view?usp=drive_link) 
-| 2  |     DeepSeekVL-7B         |                       [hg_frozen_deepseek_vl_7b_chat_refcoco_png.py](configs/deepseek_vl/hg_frozen_deepseek_vl_7b_chat_refcoco_png.py)                       | [model](https://drive.google.com/file/d/1LOwIAYVyR51e34ksV9jz-GGiFfmkZLj_/view?usp=drive_link) 
-| 3  |     LLaVA-1.5-7B          |    [hg_frozen_llava_1_5_vicuna_7b_refcoco_png.py](configs/llava/hg_frozen_llava_1_5_vicuna_7b_refcoco_png.py)     | [model](https://drive.google.com/file/d/1opjFe15B5L5JJ78gE_FsXvDnwSlwSHhh/view?usp=sharing) |
+| 1  |    DeepSeekVL-1.3B         |                    [hg_frozen_deepseek_vl_1_3b_chat_refcoco_png.py](configs/deepseek_vl/hg_frozen_deepseek_vl_1_3b_chat_refcoco_png.py)                      | [model](https://drive.google.com/file/d/1kDZnM1UREePvdfnPB5RoC0e4FNxxuaWH/view?usp=sharing) 
+| 2  |     DeepSeekVL-7B         |                       [hg_frozen_deepseek_vl_7b_chat_refcoco_png.py](configs/deepseek_vl/hg_frozen_deepseek_vl_7b_chat_refcoco_png.py)                       | [model](https://drive.google.com/file/d/15X73eHgj25g6SzvHPM0P3JSdGMQIKPIr/view?usp=sharing) 
+| 3  |     LLaVA-1.5-7B          |    [hg_frozen_llava_1_5_vicuna_7b_refcoco_png.py](configs/llava/hg_frozen_llava_1_5_vicuna_7b_refcoco_png.py)     | [model](https://drive.google.com/file/d/1k5Jp3iEoxKMASBI2vm1jPaV8uHTEwL6w/view?usp=sharing) |
 
 
 **Panoptic Narrative Grounding (PNG).**
@@ -116,7 +115,7 @@ accelerate launch scripts/multiprocess_eval_refcoco.py \
 export PYTHONPATH=.
 accelerate launch GCG_val/gcg_code/gcg_infer.py \
  configs/deepseek_vl/hg_frozen_deepseek_vl_1_3b_chat_refcoco_png.py \
-  --checkpoint checkpoints/hg_frozen_deepseek_vl_1_3b_chat_refcoco_png.pth 
+  --checkpoint checkpoints/hg_frozen_deepseek_vl_1_3b_chat_refcoco_png.pth \
 python GCG_val/gcg_code/gcg_evaluate.py
 ```
 
