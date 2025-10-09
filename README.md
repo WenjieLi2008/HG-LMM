@@ -87,7 +87,7 @@ Currently, there are bugs when deepspeed_zero3 is used.
 
 ### Test
 **Checkpoints.**
-The checkpoints of our trained models are available on [Google Drive](https://drive.google.com/drive/folders/1bvrDqm9m4MvcocuwvvkGf_qYRBfvr0K7?usp=sharing). Download and put them under `checkpoints/`.
+The checkpoints of our trained models are available on Google Drive. Download and put them under `checkpoints/`.
 
 | #  |          LMM         |                                                            Configs                                                             |                                         Checkpoints                                         |
 |:--:|:---------------------:|:------------------------------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------:|
