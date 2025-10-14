@@ -108,6 +108,9 @@ def validate(val_loader, model, epoch, args):
 
         pred_masks = F.interpolate(pred_masks[None].float().sigmoid(),
                                   size=(image.height, image.width), mode='bilinear')[0]
+        threshold = 0.3
+        pred_masks = (pred_masks > threshold).float()
+        
         masks_list = input_dict["masks_list"][0].int()
         output_list = pred_masks
         mismatch_num = 0

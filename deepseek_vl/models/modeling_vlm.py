@@ -155,13 +155,21 @@ class MultiModalityCausalLM(MultiModalityPreTrainedModel):
         images = rearrange(pixel_values, "b n c h w -> (b n) c h w")
         # [b x n, T2, D]
         images = images.float()
-        # images_embeds = self.aligner(self.vision_model(images))
         images_embeds, clip_attns, clip_hidden_states = self.vision_model(images)
         images_embeds = self.aligner(images_embeds)
 
+        #deepseek_1_3b
         if len(clip_hidden_states) == 24:
             for i in range(len(clip_hidden_states)):
                 clip_hidden_states[i] = self.aligner(clip_hidden_states[i])
+
+        #deepseek_7b
+        if len(clip_hidden_states) == 2:
+            clip_hidden_states_high = clip_hidden_states[0].view(12,1024,576).permute(0,2,1)[[1,2,4,5,7,9,10,11]]
+            clip_hidden_states_low = torch.stack(clip_hidden_states[1]).squeeze(1)[[3,6,9,12,15,18,20,23]]
+            clip_hidden_states =[None] * 8
+            for i in range(8):
+                clip_hidden_states[i] = self.aligner((clip_hidden_states_high[i],clip_hidden_states_low[i]))
 
 
         # [b x n, T2, D] -> [b, n x T2, D]

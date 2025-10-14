@@ -15,8 +15,8 @@ from GCG_val.utils import *
 def parse_args():
     parser = argparse.ArgumentParser(description="Training")
 
-    parser.add_argument("--split", required=False, default="test", help="Evaluation split, options are 'val', 'test'")
-    parser.add_argument("--prediction_dir_path", required=False, default="gcg/gcg_result/test/test_result_7b_spacy_his_noSAM",
+    parser.add_argument("--split", required=False, default="val", help="Evaluation split, options are 'val', 'test'")
+    parser.add_argument("--prediction_dir_path", required=False, default="CGC_val/gcg_result/test",
                         help="The path where the inference results are stored.")
     parser.add_argument("--gt_dir_path", required=False, default="data/GCG/GranDf/annotations/val_test",
                         help="The path containing GranD-f evaluation annotations.")

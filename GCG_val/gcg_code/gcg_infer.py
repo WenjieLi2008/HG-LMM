@@ -109,7 +109,8 @@ if __name__ == "__main__":
     parser.add_argument('config', help='config file path.')
     parser.add_argument('--checkpoint', default=None, type=str)
     parser.add_argument("--img_dir", default="data/GCG/GranDf_HA_images/val_test", type=str)
-    parser.add_argument("--output_dir", default="gcg/gcg_result/test/test_result_7b_spacy_mymethod_SAM_2", type=str)
+    parser.add_argument("--split", default="val", type=str)
+    parser.add_argument("--output_dir", default="CGC_val/gcg_result/test", type=str)
     # DDP Related parameters
     parser.add_argument("--batch_size_per_gpu", required=False, default=1)
     parser.add_argument('--world_size', default=1, type=int, help='number of distributed processes')
@@ -120,7 +121,7 @@ if __name__ == "__main__":
     init_distributed_mode(args)
 
     instruction = "Please give me a detailed description of the image."
-    gt_cap_path = "data/GCG/GranDf/annotations/val_test/test_gcg_coco_caption_gt.json"
+    gt_cap_path = f"data/GCG/GranDf/annotations/val_test/{args.split}_gcg_coco_caption_gt.json"
     PROGRESS_FILE = os.path.join(args.output_dir, "processed_image_ids.json")
 
     # loading model

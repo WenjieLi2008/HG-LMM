@@ -391,12 +391,7 @@ class HGFrozenDeepseekVL(FrozenDeepseekVL):
 
 
         ###LIFG
-        clip_hidden_states = clip_hidden_states[1]  # (24, 576, 4096)
-        for i in range(len(clip_hidden_states)):
-            clip_hidden_states[i] = self.cliplayer(clip_hidden_states[i])
-        selected_layers = [3,6,9,12,15,18,20,23]
-        clip_hidden_states = torch.stack(clip_hidden_states)  # (8, 576, 4096)
-        clip_multilayer = torch.stack([clip_hidden_states[i] for i in selected_layers]).squeeze(1)
+        clip_multilayer = torch.stack(clip_hidden_states)
         dynamic_fused_image_embeds = self.lifg(clip_multilayer,llm_text_embeds)
 
 
@@ -608,12 +603,7 @@ class HGFrozenDeepseekVL(FrozenDeepseekVL):
         llm_text_embeds = torch.stack(llm_text_embeds)
 
         ###LIFG
-        clip_hidden_states = clip_hidden_states[1]  # (24, 576, 2048)
-        for i in range(len(clip_hidden_states)):
-            clip_hidden_states[i] = self.cliplayer(clip_hidden_states[i])
-        selected_layers = [3, 6, 9, 12, 15, 18, 20, 23]
-        clip_hidden_states = torch.stack(clip_hidden_states)  # (24, 576, 4096)
-        clip_multilayer = torch.stack([clip_hidden_states[i] for i in selected_layers]).squeeze(1)
+        clip_multilayer = torch.stack(clip_hidden_states)
         dynamic_fused_image_embeds = self.lifg(clip_multilayer, llm_text_embeds)
 
         ###LDSI
