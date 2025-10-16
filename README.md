@@ -135,7 +135,7 @@ Here we present some qualitative examples of our method on both RES and PNG
       title={HG-LMM: Unleashing High-Quality Pixel Grounding Capabilities in Frozen Large Multimodal Models}, 
       author={Wenjie Li, Jiale Cao, Jin Xie, Aiping Yang, and Yanwei Pang},
       year={2025},
-      eprint={technique report},
+      journal={technique report},
 }
 ```
 
