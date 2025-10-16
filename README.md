@@ -7,9 +7,6 @@ This is the official release of paper **HG-LMM: Unleashing High-Quality Pixel Gr
 Frozen Large Multimodal Models**. 
 It is currently under construction.
 
-> [**HG-LMM: Unleashing High-Quality Pixel Grounding Capabilities in Frozen Large Multimodal Models**](https://arxiv.org/abs/2406.05821),            
-> Wenjie Li, Jiale Cao, Jin Xie, Aiping Yang, and Yanwei Pang            
-> [Bibtex](https://github.com/WenjieLi2008/HG-LMM#citation)
 
 
 ## Dependencies
@@ -113,7 +110,7 @@ accelerate launch scripts/multiprocess_eval_refcoco.py \
 **Grounded Conversation Generation(GCG).**
 ```shell
 export PYTHONPATH=.
-accelerate launch GCG_val/gcg_code/gcg_infer.py \
+python GCG_val/gcg_code/gcg_infer.py \
  configs/deepseek_vl/hg_frozen_deepseek_vl_1_3b_chat_refcoco_png.py \
   --checkpoint checkpoints/hg_frozen_deepseek_vl_1_3b_chat_refcoco_png.pth \
 python GCG_val/gcg_code/gcg_evaluate.py
@@ -122,7 +119,7 @@ python GCG_val/gcg_code/gcg_evaluate.py
 **Reasoning Segmentation (ReasonSeg).**
 ```shell
 export PYTHONPATH=.
-accelerate launch ReasonSeg_val/reasonseg_code/reasonseg_val.py \
+python ReasonSeg_val/reasonseg_code/reasonseg_val.py \
  configs/deepseek_vl/hg_frozen_deepseek_vl_1_3b_chat_refcoco_png.py \
   --checkpoint checkpoints/hg_frozen_deepseek_vl_1_3b_chat_refcoco_png.pth 
 ```
@@ -134,13 +131,11 @@ Here we present some qualitative examples of our method on both RES and PNG
 ## Citation
 
 ```bibtex
-@misc{wu2024flmm,
+@article{li2025hglmm,
       title={HG-LMM: Unleashing High-Quality Pixel Grounding Capabilities in Frozen Large Multimodal Models}, 
       author={Wenjie Li, Jiale Cao, Jin Xie, Aiping Yang, and Yanwei Pang},
       year={2025},
-      eprint={xxx},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV}
+      eprint={technique report},
 }
 ```
 
